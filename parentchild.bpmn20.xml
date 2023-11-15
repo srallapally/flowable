@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <process id="pc" name="parentchild" isExecutable="true">
+    <processVariable name="myParentVar" type="string"/>
+    <startEvent id="startEvent1" name="parent start" flowable:formFieldValidation="true"></startEvent>
+    <scriptTask id="setparentvar" name="Set Parent Variable" scriptFormat="javascript" flowable:autoStoreVariables="true">
+      <script><![CDATA[execution.setVariable("myParentVar","Sanjay")]]></script>
+    </scriptTask>
+    <sequenceFlow id="sid-1F1C4F48-71B2-46F4-8033-9F030B3B91C9" sourceRef="startEvent1" targetRef="setparentvar"></sequenceFlow>
+    <subProcess id="subprocess" name="subprocess">
+    <processVariable name="subInputVar" type="string"/>
+    <processVariable name="subOutputVar" type="string"/>
+     <extensionElements>
+      <flowable:in source="myParentVar" target="subInputVar"/>
+      <flowable:out source="subOutputVar" target="myParentVar"/>
+    </extensionElements>
+      <startEvent id="substart" name="sub process start" flowable:formFieldValidation="false"></startEvent>
+      <scriptTask id="setchildvar" name="set variable" scriptFormat="javascript" flowable:autoStoreVariables="true">
+      <script><![CDATA[execution.setVariable("subOutputVar",execution.getVariable("subInputVar") + " Hello")]]></script>
+      </scriptTask>
+      <sequenceFlow id="sid-6974B3FF-E65E-4495-9DBF-A84E0EFC81E1" sourceRef="substart" targetRef="setchildvar"></sequenceFlow>
+      <endEvent id="subend" name="sub process end"></endEvent>
+      <sequenceFlow id="sid-C088A5C1-1472-4DEE-8BBE-29E1DD0A1B64" sourceRef="setchildvar" targetRef="subend"></sequenceFlow>
+    </subProcess>
+    <sequenceFlow id="sid-8475CB17-E980-4D4E-80E2-9082077ED3CD" sourceRef="setparentvar" targetRef="subprocess"></sequenceFlow>
+    <scriptTask id="sid-C7735E4B-AB5C-4ACE-A4D3-2432C89D94C1" scriptFormat="groovy" flowable:autoStoreVariables="true">
+      <script><![CDATA[println execution.getVariable("myParentVar")
+println execution.getVariable("subOutputVar")]]></script>
+    </scriptTask>
+    <sequenceFlow id="sid-F881688D-FFB6-44AD-81F4-8E2D172B2D01" sourceRef="subprocess" targetRef="sid-C7735E4B-AB5C-4ACE-A4D3-2432C89D94C1"></sequenceFlow>
+    <endEvent id="sid-3C6D7C79-5F46-4C56-B475-A4BDA6F279DF" name="parent end"></endEvent>
+    <sequenceFlow id="sid-BAE4E211-3F4B-43C4-9DCE-BDF7CA533F04" sourceRef="sid-C7735E4B-AB5C-4ACE-A4D3-2432C89D94C1" targetRef="sid-3C6D7C79-5F46-4C56-B475-A4BDA6F279DF"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_pc">
+    <bpmndi:BPMNPlane bpmnElement="pc" id="BPMNPlane_pc">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="154.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="setparentvar" id="BPMNShape_setparentvar">
+        <omgdc:Bounds height="80.0" width="100.0" x="192.5" y="129.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess" id="BPMNShape_subprocess" isExpanded="false">
+        <omgdc:Bounds height="80.0" width="100.0" x="405.0" y="129.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-C7735E4B-AB5C-4ACE-A4D3-2432C89D94C1" id="BPMNShape_sid-C7735E4B-AB5C-4ACE-A4D3-2432C89D94C1">
+        <omgdc:Bounds height="80.0" width="100.0" x="600.0" y="129.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-3C6D7C79-5F46-4C56-B475-A4BDA6F279DF" id="BPMNShape_sid-3C6D7C79-5F46-4C56-B475-A4BDA6F279DF">
+        <omgdc:Bounds height="28.0" width="28.0" x="817.5" y="155.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-BAE4E211-3F4B-43C4-9DCE-BDF7CA533F04" id="BPMNEdge_sid-BAE4E211-3F4B-43C4-9DCE-BDF7CA533F04" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="699.9499999999592" y="169.0"></omgdi:waypoint>
+        <omgdi:waypoint x="817.5" y="169.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-F881688D-FFB6-44AD-81F4-8E2D172B2D01" id="BPMNEdge_sid-F881688D-FFB6-44AD-81F4-8E2D172B2D01" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="504.95000000000005" y="169.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="169.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-8475CB17-E980-4D4E-80E2-9082077ED3CD" id="BPMNEdge_sid-8475CB17-E980-4D4E-80E2-9082077ED3CD" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="292.4499999999867" y="169.0"></omgdi:waypoint>
+        <omgdi:waypoint x="405.0" y="169.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-1F1C4F48-71B2-46F4-8033-9F030B3B91C9" id="BPMNEdge_sid-1F1C4F48-71B2-46F4-8033-9F030B3B91C9" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="129.94999887588844" y="169.0"></omgdi:waypoint>
+        <omgdi:waypoint x="192.49999999998826" y="169.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_subprocess">
+    <bpmndi:BPMNPlane bpmnElement="subprocess" id="BPMNPlane_subprocess">
+      <bpmndi:BPMNShape bpmnElement="substart" id="BPMNShape_substart">
+        <omgdc:Bounds height="30.0" width="30.0" x="180.0" y="222.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="setchildvar" id="BPMNShape_setchildvar">
+        <omgdc:Bounds height="80.0" width="100.0" x="345.0" y="197.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-6974B3FF-E65E-4495-9DBF-A84E0EFC81E1" id="BPMNEdge_sid-6974B3FF-E65E-4495-9DBF-A84E0EFC81E1" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="209.94999954302153" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="345.0" y="237.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="subend" id="BPMNShape_subend">
+        <omgdc:Bounds height="28.0" width="28.0" x="570.0" y="223.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-C088A5C1-1472-4DEE-8BBE-29E1DD0A1B64" id="BPMNEdge_sid-C088A5C1-1472-4DEE-8BBE-29E1DD0A1B64" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="444.95000000000005" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="570.0" y="237.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
